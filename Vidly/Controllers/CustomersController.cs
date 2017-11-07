@@ -13,26 +13,28 @@ namespace Vidly.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            var customers = new List<Customer>()
-            {
-                new Customer(){ Id = 1, Name = "John Smith" },
-                new Customer(){ Id = 2, Name = "Mary Williams" }
-            };
-            var viewModel = new CustomerListViewModel() { Customers = customers };
-            Session["CustomeListViewModel"] = viewModel;
-            return View(viewModel);
+            return View(GetCustomers());
         }
 
         [Route("Customers/Detail/{id}")]
         public ActionResult Detail(int id)
         {
-            var customers = (CustomerListViewModel)Session["CustomeListViewModel"];
-            var customer = customers.Customers.SingleOrDefault(c => c.Id == id);
+            var customers = GetCustomers();
+            var customer = customers.SingleOrDefault(c => c.Id == id);
             if (customer == null)
                 return HttpNotFound();
             else
                 return View(customer);
 
+        }
+
+        private IEnumerable<Customer> GetCustomers()
+        {
+            return new List<Customer>()
+            {
+                new Customer(){ Id = 1, Name = "John Smith" },
+                new Customer(){ Id = 2, Name = "Mary Williams" }
+            };
         }
     }
 }
