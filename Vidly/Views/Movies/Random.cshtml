@@ -1,0 +1,35 @@
+﻿@*
+    Since the data type of modal is dynamic,
+    we need to a directive to specify the type of modal for this view on the top of the file
+    To specific the type of dynamic, define model with lowercase letter
+*@
+
+@using Vidly.Models;
+
+
+@model Vidly.ViewModels.RandomMovieViewModel
+@{
+    ViewBag.Title = "Random";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var className = ((Model.Customers.Count > 0) ? "popular" : null);
+}
+<!--When you call the Modal, by default from Razor, please use Uppercase letter -->
+<h2 class="@className">@Model.Movie.Name</h2>
+
+
+@if (Model.Customers.Count == 0)
+{
+    <p>No one has rented this movie before.</p>
+}
+else
+{
+    <ul>
+        @foreach (var customer in Model.Customers)
+        {
+            <li>@customer.Name</li>
+        }
+    </ul>
+}
