@@ -329,6 +329,7 @@
     <Content Include="Views\Movies\Index.cshtml" />
     <Content Include="Views\Movies\Random.cshtml" />
     <Content Include="Views\Movies\Detail.cshtml" />
+    <Content Include="Views\Customers\New.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
