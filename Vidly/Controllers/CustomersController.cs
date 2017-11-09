@@ -23,6 +23,7 @@ namespace Vidly.Controllers
             _context.Dispose();
         }
 
+        [Route("Customers/New")]
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();

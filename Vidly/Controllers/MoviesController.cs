@@ -29,6 +29,36 @@ namespace Vidly.Controllers
             return View(movies);
         }
 
+        [Route("Movies/New")]
+        public ActionResult New()
+        {
+            var viewModel = new MovieFormViewModel()
+            {
+                Genres = _context.Genres.ToList()
+            };
+            return View("MovieForm", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Save(Movie movie)
+        {
+            if (movie.Id == 0)
+            {
+                movie.AddDate = DateTime.Now;
+                _context.Movies.Add(movie);
+            }
+            else
+            {
+                var movieInDb = _context.Movies.Single(m => m.Id == movie.Id);
+                movieInDb.Name = movie.Name;
+                movieInDb.ReleasedDate = movie.ReleasedDate;
+                movieInDb.GenreId = movie.GenreId;
+                movieInDb.InStock = movie.InStock;
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index", "Movies");
+        }
+
         [Route("Movies/Detail/{id}")]
         public ActionResult Detail(int id)
         {
@@ -56,7 +86,20 @@ namespace Vidly.Controllers
 
         public ActionResult Edit(int id)
         {
-            return Content("id = " + id);
+            var movie = _context.Movies.SingleOrDefault(c => c.Id == id);
+            if (movie == null)
+                return HttpNotFound();
+
+            var viewModel = new MovieFormViewModel()
+            {
+                Movie = movie,
+                Genres = _context.Genres.ToList()
+            };
+
+            /* To override the default convention in MVC -> specify the name of view 
+             * Without the view's name, MVC will look for a view named Edit
+            */
+            return View("MovieForm", viewModel);
         }
 
         [Route("Movies/Released/{year}/{month:regex(\\d{2}):range(1, 12)}")]
