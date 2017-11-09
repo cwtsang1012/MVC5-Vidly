@@ -26,37 +26,53 @@ namespace Vidly.Controllers
         public ActionResult New()
         {
             var membershipTypes = _context.MembershipTypes.ToList();
-            var viewModel = new NewCustomerViewModel()
+            var viewModel = new CustomerFormViewModel()
             {
                 MembershipTypes = membershipTypes
             };
-            return View(viewModel);
+            return View("CustomerForm", viewModel);
         }
 
         [HttpPost]
-        public ActionResult Create(Customer customer) {
-            /*
-             * MVC framework will automatically map the requested data to this input object 
-             * This is what we call Model Binding
-             * If we change the type of parameter to Customer, entity frameowrk is smart enough to bind this object to form data
-             * Because all the keys in the form data are prefixed
-             */
-            _context.Customers.Add(customer); /*write in memory, not in DB*/
+        public ActionResult Save(Customer customer)
+        {
+            if (customer.Id == 0)
+            {
+                _context.Customers.Add(customer);
+            } else 
+            {
+                var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+                /* Single() is used instead of SingleOrDefault()
+                 * So if the given customer is not found, this is going to throw an exception.
+                */
 
-            /* our DbContext has a change tracking mechanism,
-             * so any time you add an object, modify the object or remove one of the existing objects
-             * it will mark them as either modified or deleted
-            */
+                customerInDb.Name = customer.Name;
+                customerInDb.Birthdate = customer.Birthdate;
+                customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
+            }
 
-            _context.SaveChanges(); /* persist the changes*/
-            /* At this point our context goes through all modified objects and based on the kind of of modification,
-             * it will generate SQL statements at runtime and then run them on database.
-             * All these statements are wrapped in a transaction.
-             * So the changes get peristed together or nothing get persisted
-            */
-
+            _context.SaveChanges(); 
             return RedirectToAction("Index", "Customers");
 
+        }
+
+        public ActionResult Edit(int id)
+        {
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            if (customer == null)
+                return HttpNotFound();
+
+            var viewModel = new CustomerFormViewModel()
+            {
+                Customer = customer,
+                MembershipTypes = _context.MembershipTypes.ToList()
+            };
+
+            /* To override the default convention in MVC -> specify the name of view 
+             * Without the view's name, MVC will look for a view named Edit
+            */
+                return View("CustomerForm", viewModel);
         }
 
         // GET: Customers
