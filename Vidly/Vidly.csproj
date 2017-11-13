@@ -249,6 +249,10 @@
     <Compile Include="Migrations\201711080756490_AddInStockToMovie.Designer.cs">
       <DependentUpon>201711080756490_AddInStockToMovie.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711130954214_SetRequiredFieldsToMoive.cs" />
+    <Compile Include="Migrations\201711130954214_SetRequiredFieldsToMoive.Designer.cs">
+      <DependentUpon>201711130954214_SetRequiredFieldsToMoive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -388,6 +392,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711080756490_AddInStockToMovie.resx">
       <DependentUpon>201711080756490_AddInStockToMovie.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711130954214_SetRequiredFieldsToMoive.resx">
+      <DependentUpon>201711130954214_SetRequiredFieldsToMoive.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

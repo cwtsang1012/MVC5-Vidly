@@ -15,5 +15,10 @@ namespace Vidly.Models
         public byte DurationInMonths { get; set; }  /* value from 1 to 12 */
         public byte DiscountRate { get; set; } /* value from 0 to 100 */
 
+        //add these to prevent magic numbers in validation parts => regarded as referrence code
+        //Alternative way is using enum here => but need to cast to the property's type every time
+        public static readonly byte Unknown = 0;
+        public static readonly byte PayAsYouGo = 1;
+
     }
 }

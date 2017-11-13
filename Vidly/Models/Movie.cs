@@ -11,8 +11,10 @@ namespace Vidly.Models
     {
         public int Id { get; set; }
 
+        [Required]
         public string Name { get; set; }
 
+        [Required]
         [Display(Name="Release Date")]
         public DateTime ReleasedDate { get; set; }
 
@@ -24,6 +26,8 @@ namespace Vidly.Models
         [Display(Name = "Genre")]
         public int GenreId { get; set; }
 
+        [Required]
+        [Range(1,20)]
         [Display(Name="Number in Stock")]
         public int InStock { get; set; }
     }
