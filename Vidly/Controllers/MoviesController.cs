@@ -34,7 +34,7 @@ namespace Vidly.Controllers
         {
             var viewModel = new MovieFormViewModel()
             {
-                Movie = new Movie(),
+                Movie = new Movie() { ReleasedDate = DateTime.Now },
                 Genres = _context.Genres.ToList()
             };
             return View("MovieForm", viewModel);
