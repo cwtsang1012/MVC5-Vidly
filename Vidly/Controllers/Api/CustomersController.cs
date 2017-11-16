@@ -5,26 +5,48 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Vidly.Models;
+using Vidly.Dtos;
+using AutoMapper;
 
 namespace Vidly.Controllers.Api
 {
     public class CustomersController : ApiController
     {
         private ApplicationDbContext _context;
+        private MapperConfiguration config;
+        private IMapper mapper;
 
         public CustomersController()
         {
             _context = new ApplicationDbContext();
+
+            //configure AutoMapper to know what types you want to map from model to model DTO
+           config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<Customer, CustomerDto>();
+                cfg.CreateMap<CustomerDto, Customer>();
+            });
+            mapper = config.CreateMapper();
+            /* or using static method 
+             * Mapper.Initialize(cfg => 
+             * {
+             *      cfg.CreateMap<Customer, CustomerDto>();
+             *      cfg.CreateMap<CustomerDto, Customer>();
+             * });
+            */
         }
 
         //GET /api/Customers
-        public IEnumerable<Customer> GetCustomers()
+        public IEnumerable<CustomerDto> GetCustomers()
         {
-            return _context.Customers.ToList();
+            return _context.Customers.ToList().Select(c => mapper.Map<Customer, CustomerDto>(c));
+            /* or (static method - source and target must be defined as there are more than one mapping configuration)
+             * return _context.Customers.ToList().Select(c => Mapper.Map<Customer, CustomerDto>(c));
+             */
         }
 
         //GET /api/Customers/id
-        public Customer GetCustomer(int id)
+        public CustomerDto GetCustomer(int id)
         {
             var customer =  _context.Customers.SingleOrDefault(c => c.Id == id);
 
@@ -33,28 +55,32 @@ namespace Vidly.Controllers.Api
             if (customer == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            return customer;
+            return mapper.Map<Customer, CustomerDto>(customer);
         }
 
         // By convention, when we create a resource, we return a newly created resource to the client
         //POST /api/Customers
         [HttpPost]
-        public Customer CreateCustomer(Customer customer)
+        public CustomerDto CreateCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
+            var customer = mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
-            return customer;
+            //customer's Id is updated after saving to database => update DTO before it is returned back to the view)
+            customerDto.Id = customer.Id;
+
+            return customerDto;
         }
 
         // By convention, return resource type or void is both ok.
         // 2 parameters: id - from URL & customer - from request body
         //PUT /api/Customers/id
         [HttpPut]
-        public void EditCustomer(int id, Customer customer)
+        public void EditCustomer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -63,10 +89,14 @@ namespace Vidly.Controllers.Api
             if (customerInDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            customerInDb.Name = customer.Name;
-            customerInDb.Birthdate = customer.Birthdate;
-            customerInDb.MembershipTypeId = customer.MembershipTypeId;
-            customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
+            //2nd parameter is used if the passing object is existed, it will auto update object.
+            //Without 2nd parmeter will return a new object
+            mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
+
+            //customerInDb.Name = customer.Name;
+            //customerInDb.Birthdate = customer.Birthdate;
+            //customerInDb.MembershipTypeId = customer.MembershipTypeId;
+            //customerInDb.IsSubscribedToNewsletter = customer.IsSubscribedToNewsletter;
 
             _context.SaveChanges();
         }
