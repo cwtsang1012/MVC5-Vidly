@@ -13,7 +13,6 @@ namespace Vidly.Controllers.Api
     public class CustomersController : ApiController
     {
         private ApplicationDbContext _context;
-        private MapperConfiguration config;
         private IMapper mapper;
 
         public CustomersController()
@@ -21,13 +20,12 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
 
             //configure AutoMapper to know what types you want to map from model to model DTO
-           config = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<Customer, CustomerDto>();
-                cfg.CreateMap<CustomerDto, Customer>();
-            });
-            mapper = config.CreateMapper();
-            /* or using static method 
+           //var config = new MapperConfiguration(cfg =>
+           // {
+           //     cfg.CreateMap<Customer, CustomerDto>().ReverseMap();
+           // });
+           // mapper = config.CreateMapper();
+            /* or using static method - placed at Global.asax.cs
              * Mapper.Initialize(cfg => 
              * {
              *      cfg.CreateMap<Customer, CustomerDto>();
@@ -39,7 +37,8 @@ namespace Vidly.Controllers.Api
         //GET /api/Customers
         public IEnumerable<CustomerDto> GetCustomers()
         {
-            return _context.Customers.ToList().Select(c => mapper.Map<Customer, CustomerDto>(c));
+            //return _context.Customers.ToList().Select(c => mapper.Map<Customer, CustomerDto>(c));
+            return _context.Customers.ToList().Select(c => Mapper.Map<Customer, CustomerDto>(c));
             /* or (static method - source and target must be defined as there are more than one mapping configuration)
              * return _context.Customers.ToList().Select(c => Mapper.Map<Customer, CustomerDto>(c));
              */

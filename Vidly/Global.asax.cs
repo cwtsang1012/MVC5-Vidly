@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using System.Web.Http;
+using AutoMapper;
+using Vidly.Models;
+using Vidly.Dtos;
 
 namespace Vidly
 {
@@ -13,6 +16,13 @@ namespace Vidly
     {
         protected void Application_Start()
         {
+           
+           Mapper.Initialize(cfg =>
+           {
+                cfg.CreateMap<Customer, CustomerDto>();
+                cfg.CreateMap<CustomerDto, Customer>();
+           });
+
             GlobalConfiguration.Configure(WebApiConfig.Register);
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
