@@ -13,25 +13,18 @@ namespace Vidly.Controllers.Api
     public class CustomersController : ApiController
     {
         private ApplicationDbContext _context;
-        private IMapper mapper;
+        //private IMapper mapper;  
 
         public CustomersController()
         {
             _context = new ApplicationDbContext();
 
-            //configure AutoMapper to know what types you want to map from model to model DTO
+           //configure AutoMapper to know what types you want to map from model to model DTO
            //var config = new MapperConfiguration(cfg =>
            // {
            //     cfg.CreateMap<Customer, CustomerDto>().ReverseMap();
            // });
            // mapper = config.CreateMapper();
-            /* or using static method - placed at Global.asax.cs
-             * Mapper.Initialize(cfg => 
-             * {
-             *      cfg.CreateMap<Customer, CustomerDto>();
-             *      cfg.CreateMap<CustomerDto, Customer>();
-             * });
-            */
         }
 
         //GET /api/Customers
@@ -54,7 +47,7 @@ namespace Vidly.Controllers.Api
             if (customer == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            return mapper.Map<Customer, CustomerDto>(customer);
+            return Mapper.Map<Customer, CustomerDto>(customer);
         }
 
         // By convention, when we create a resource, we return a newly created resource to the client
@@ -65,7 +58,7 @@ namespace Vidly.Controllers.Api
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
 
-            var customer = mapper.Map<CustomerDto, Customer>(customerDto);
+            var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
@@ -90,7 +83,7 @@ namespace Vidly.Controllers.Api
 
             //2nd parameter is used if the passing object is existed, it will auto update object.
             //Without 2nd parmeter will return a new object
-            mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
+            Mapper.Map<CustomerDto, Customer>(customerDto, customerInDb);
 
             //customerInDb.Name = customer.Name;
             //customerInDb.Birthdate = customer.Birthdate;

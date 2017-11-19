@@ -4,6 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using Vidly.Dtos;
+using AM = AutoMapper;
+using Vidly.Models;
 
 namespace Vidly.Models
 {
@@ -15,7 +17,7 @@ namespace Vidly.Models
             if (validationContext.ObjectType.Name == "CustomerDto")
             {
                 var customerDto  = (CustomerDto)validationContext.ObjectInstance;
-                
+                customer = AM.Mapper.Map<CustomerDto, Customer>(customerDto);
             }
             else
                 customer = (Customer)validationContext.ObjectInstance; /*give access to containing class, ie Customer)*/
