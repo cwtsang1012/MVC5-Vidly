@@ -21,6 +21,8 @@ namespace Vidly
            {
                 cfg.CreateMap<Customer, CustomerDto>();
                 cfg.CreateMap<CustomerDto, Customer>();
+                cfg.CreateMap<Movie, MovieDto>();
+                cfg.CreateMap<MovieDto, Movie>();
            });
 
             GlobalConfiguration.Configure(WebApiConfig.Register);

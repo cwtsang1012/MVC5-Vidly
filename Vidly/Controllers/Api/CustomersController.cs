@@ -38,25 +38,25 @@ namespace Vidly.Controllers.Api
         }
 
         //GET /api/Customers/id
-        public CustomerDto GetCustomer(int id)
+        public IHttpActionResult GetCustomer(int id)
         {
             var customer =  _context.Customers.SingleOrDefault(c => c.Id == id);
 
             // this is part of RESTful convention
             // If the given resource is not found, return the standard NotFound HTTP response
             if (customer == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return NotFound();
 
-            return Mapper.Map<Customer, CustomerDto>(customer);
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
         }
 
         // By convention, when we create a resource, we return a newly created resource to the client
         //POST /api/Customers
         [HttpPost]
-        public CustomerDto CreateCustomer(CustomerDto customerDto)
+        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
 
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
@@ -65,7 +65,9 @@ namespace Vidly.Controllers.Api
             //customer's Id is updated after saving to database => update DTO before it is returned back to the view)
             customerDto.Id = customer.Id;
 
-            return customerDto;
+            //lst argument: URI of newly created resource
+            //2nd argument: Pass the actual object that was created
+            return Created(new Uri(Request.RequestUri + "/" + customer.Id), customerDto);
         }
 
         // By convention, return resource type or void is both ok.
