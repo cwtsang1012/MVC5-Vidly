@@ -21,5 +21,7 @@ namespace Vidly.Dtos
         public bool IsSubscribedToNewsletter { get; set; }
        
         public byte MembershipTypeId { get; set; } /* EF recognise this as foreign key by convention */
+
+        public MembershipTypeDto MembershipType { get; set; }
     }
 }
