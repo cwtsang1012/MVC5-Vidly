@@ -279,6 +279,10 @@
     <Compile Include="Migrations\201711130954214_SetRequiredFieldsToMoive.Designer.cs">
       <DependentUpon>201711130954214_SetRequiredFieldsToMoive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712071631519_SeedUsers.cs" />
+    <Compile Include="Migrations\201712071631519_SeedUsers.Designer.cs">
+      <DependentUpon>201712071631519_SeedUsers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -663,6 +667,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711130954214_SetRequiredFieldsToMoive.resx">
       <DependentUpon>201711130954214_SetRequiredFieldsToMoive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712071631519_SeedUsers.resx">
+      <DependentUpon>201712071631519_SeedUsers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
