@@ -5,8 +5,9 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
-using Vidly.Dtos;
+using System.Data.Entity;
 using Vidly.Models;
+using Vidly.Dtos;
 
 namespace Vidly.Controllers.Api
 {
@@ -19,10 +20,16 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
 
-        //GET /api/Movies
-        public IEnumerable<MovieDto> GetMovies()
+        protected override void Dispose(bool disposing)
         {
-            return _context.Movies.ToList().Select(m => Mapper.Map<Movie, MovieDto>(m));
+            _context.Dispose();
+        }
+
+        //GET /api/Movies
+        public IHttpActionResult GetMovies()
+        {
+            var moviesDto = _context.Movies.Include(m => m.Genre).ToList().Select(m => Mapper.Map<Movie, MovieDto>(m));
+            return Ok(moviesDto);
         }
 
         //GET /api/Movies/id

@@ -27,5 +27,7 @@ namespace Vidly.Dtos
         [Range(1, 20)]
         [Display(Name = "Number in Stock")]
         public int InStock { get; set; }
+
+        public GenreDto Genre { get; set; }
     }
 }
