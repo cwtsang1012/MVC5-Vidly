@@ -27,9 +27,18 @@ namespace Vidly.Controllers
         {
             //var movies = _context.Movies.Include(m => m.Genre).ToList();
             //return View(movies);
-            return View();
+            if (User.IsInRole(RoleName.CanManageMovie))
+            {
+                return View("List");
+            }
+            else
+            {
+                return View("ReadOnlyList");
+            }
+            
         }
 
+        [Authorize(Roles = RoleName.CanManageMovie)] //adding parameter will override the global authorize filter
         [Route("Movies/New")]
         public ActionResult New()
         {

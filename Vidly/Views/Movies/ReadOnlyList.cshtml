@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Vidly.Models.Movie>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Movies</h2>
+
+<table id="movies" class="table table-bordered table-hover" style="margin-top:8px;">
+    <thead>
+        <tr>
+            <th><span style="font-size: 16px;">Movie</span></th>
+            <th><span style="font-size: 16px;">Genre</span></th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var table = $('#movies').DataTable({
+                ajax: {
+                    url: '/api/Movies',
+                    dataSrc: ""
+                },
+                columns: [
+                    {
+                        data: "name",       //Due to Camel Notation, all properties are started with lowercase
+                    },
+                    {
+                        data: "genre.name"
+                    }
+                ]
+            }); //simply way to jquery.datatables
+        });
+    </script>
+}
