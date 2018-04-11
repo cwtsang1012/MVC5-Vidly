@@ -26,7 +26,21 @@ namespace Vidly.Controllers.Api
         [HttpPost]
         public IHttpActionResult CreateNewRentals(NewRentalDto newRentalDto)
         {
-            throw new NotImplementedException();
+            var customer = _context.Customers.SingleOrDefault(c => c.Id == newRentalDto.CustomerId);
+
+            if (customer == null)
+                return BadRequest("Invalid Customer ID.");
+
+            var movies = _context.Movies.Where(m => newRentalDto.MovieIds.Contains(m.Id));
+
+            foreach (var movie in movies)
+            {
+                var rental = new Rental { Customer = customer, Movie = movie, DateRented = DateTime.Now };
+                _context.Rentals.Add(rental);
+            }
+
+            _context.SaveChanges();
+            return Ok();
         }
 
         
