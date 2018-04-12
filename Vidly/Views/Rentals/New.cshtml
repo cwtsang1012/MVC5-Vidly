@@ -12,12 +12,22 @@
     <!--div.form-group>label+input[type='text'].form-control -->
     <div class="form-group">
         <label>Customer</label>
-        <input id="customer" type="text" value="" class="form-control" />
+        <div class="tt-container">
+            <input id="customer" type="text" value="" class="form-control" />
+        </div>
     </div>
 
     <div class="form-group">
         <label>Movie</label>
-        <input id="movies" type="text" value="" class="form-control" />
+        <div class="tt-container">
+            <input id="movie" type="text" value="" class="form-control" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-sm-4">
+            <ul id="movies" class="list-group"></ul>
+        </div>
     </div>
 
     <button class="btn btn-primary">Submit</button>
@@ -29,7 +39,9 @@
         $(document).ready(function () {
             //vm stands for view model on client side
             //view model in server is used to encapsulate data for a given view
-            var vm = {};
+            var vm = {
+                movieIds : [] // initial this property as an array, otherwise it will throw exception
+            };
 
             var customers = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -65,7 +77,7 @@
                 }
             });
 
-            $('#movies').typeahead({
+            $('#movie').typeahead({
                 //typeahead will query the server if user types at least 3 characters
                 minLength: 3,
                 //the characters in the search result that matched our query will be bold
@@ -77,10 +89,12 @@
                 }).on("typeahead:select", function (e, movie) {
                     //e for the event, customer = selected customer
 
-                    //Later when the user submit the form, you're going to send this vm.CustomerID to Web API
-                    //var selectedMovie = {};
-                    //selectedMovie.id = movie.id;
-                    //vm.movies.Add(selectedMovie);
+                    //for better coding, use data binding like angular, react, vue that don't write any html markup
+                    $('#movies').append("<li class='list-group-item'>" + movie.name + "</li>");
+
+                    $('#movie').typeahead("val", "");
+
+                    vm.movieIds.push(movie.Id);
                 });
         });
     </script>
