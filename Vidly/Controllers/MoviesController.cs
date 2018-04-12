@@ -66,6 +66,7 @@ namespace Vidly.Controllers
             if (movie.Id == 0)
             {
                 movie.AddDate = DateTime.Now;
+                movie.Availability = movie.InStock;
                 _context.Movies.Add(movie);
             }
             else
@@ -74,7 +75,11 @@ namespace Vidly.Controllers
                 movieInDb.Name = movie.Name;
                 movieInDb.ReleasedDate = movie.ReleasedDate;
                 movieInDb.GenreId = movie.GenreId;
+                var diffStock = movie.InStock - movieInDb.InStock; //for calculation on availability
+                if (diffStock < 0 && Math.Abs(diffStock) - movie.Availability > 0)
+                    throw new Exception("Cannot reduce no. of stock since some of them are rented.");
                 movieInDb.InStock = movie.InStock;
+                movieInDb.Availability += diffStock;
             }
             _context.SaveChanges();
             return RedirectToAction("Index", "Movies");

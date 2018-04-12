@@ -32,6 +32,6 @@ namespace Vidly.Models
         public int InStock { get; set; }
 
         [Range(1,20)]
-        public int Avalibility { get; set; }
+        public int Availability { get; set; }
     }
 }
