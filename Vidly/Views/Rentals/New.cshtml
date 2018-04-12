@@ -12,13 +12,76 @@
     <!--div.form-group>label+input[type='text'].form-control -->
     <div class="form-group">
         <label>Customer</label>
-        <input type="text" value="" class="form-control" />
+        <input id="customer" type="text" value="" class="form-control" />
     </div>
 
     <div class="form-group">
         <label>Movie</label>
-        <input type="text" value="" class="form-control" />
+        <input id="movies" type="text" value="" class="form-control" />
     </div>
 
     <button class="btn btn-primary">Submit</button>
 </form>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            //vm stands for view model on client side
+            //view model in server is used to encapsulate data for a given view
+            var vm = {};
+
+            var customers = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/customers?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#customer').typeahead({
+                //typeahead will query the server if user types at least 3 characters
+                minLength: 3,
+                //the characters in the search result that matched our query will be bold
+                highlight: true
+            }, {
+                    name: 'customers',
+                    display: 'name',
+                    source: customers //which is defined in above bloodhound 
+                }).on("typeahead:select", function (e, customer) {
+                    //e for the event, customer = selected customer
+
+                    //Later when the user submit the form, you're going to send this vm.CustomerID to Web API
+                    vm.CustomerID = customer.id;
+                });
+
+            var movies = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: '/api/movies?query=%QUERY',
+                    wildcard: '%QUERY'
+                }
+            });
+
+            $('#movies').typeahead({
+                //typeahead will query the server if user types at least 3 characters
+                minLength: 3,
+                //the characters in the search result that matched our query will be bold
+                highlight: true
+            }, {
+                    name: 'movies',
+                    display: 'name',
+                    source: movies //which is defined in above bloodhound 
+                }).on("typeahead:select", function (e, movie) {
+                    //e for the event, customer = selected customer
+
+                    //Later when the user submit the form, you're going to send this vm.CustomerID to Web API
+                    //var selectedMovie = {};
+                    //selectedMovie.id = movie.id;
+                    //vm.movies.Add(selectedMovie);
+                });
+        });
+    </script>
+}
