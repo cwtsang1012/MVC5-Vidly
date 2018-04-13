@@ -43,7 +43,7 @@ namespace Vidly.Controllers.Api
         }
 
         //POST /api/Movies
-        [Authorize(Roles = RoleName.CanManageMovie)]
+        //[Authorize(Roles = RoleName.CanManageMovie)]
         [HttpPost]
         public IHttpActionResult PostMovie(MovieDto movieDto) {
             if (!ModelState.IsValid)
