@@ -8,7 +8,7 @@
 <h2>New Rental Form</h2>
 
 
-<form>
+<form id="newRental">
     <!--div.form-group>label+input[type='text'].form-control -->
     <div class="form-group">
         <label>Customer</label>
@@ -40,7 +40,7 @@
             //vm stands for view model on client side
             //view model in server is used to encapsulate data for a given view
             var vm = {
-                movieIds : [] // initial this property as an array, otherwise it will throw exception
+                MovieIds : [] // initial this property as an array, otherwise it will throw exception
             };
 
             var customers = new Bloodhound({
@@ -94,8 +94,25 @@
 
                     $('#movie').typeahead("val", "");
 
-                    vm.movieIds.push(movie.Id);
+                    vm.MovieIds.push(movie.id);
                 });
+
+            $('#newRental').submit(function (e) {
+                //Prevent the form submitting normally
+                e.preventDefault();
+
+                $.ajax({
+                    url: "../api/NewRentals",
+                    method: "post",
+                    data: vm
+                })
+                .done(function () {
+                    console.log("Done!");
+                })
+                .fail(function () {
+
+                });
+            });
         });
     </script>
 }
