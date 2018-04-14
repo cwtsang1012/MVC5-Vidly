@@ -107,10 +107,10 @@
                     data: vm
                 })
                 .done(function () {
-                    console.log("Done!");
+                    toastr.success("Rentals successfully recorded.");
                 })
                 .fail(function () {
-
+                    toastr.fail("Something unexpected happened.");
                 });
             });
         });
