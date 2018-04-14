@@ -13,14 +13,15 @@
     <div class="form-group">
         <label>Customer</label>
         <div class="tt-container">
-            <input id="customer" type="text" value="" class="form-control" />
+            <!--data-rule-validCustomer is defined in jQuery.validate plugin, see below-->
+            <input id="customer" data-rule-validCustomer="true" required type="text" value="" class="form-control" />
         </div>
     </div>
 
     <div class="form-group">
         <label>Movie</label>
         <div class="tt-container">
-            <input id="movie" type="text" value="" class="form-control" />
+            <input id="movie" data-rule-validMovies="true" type="text" value="" class="form-control" />
         </div>
     </div>
 
@@ -35,6 +36,9 @@
 
 @section scripts
 {
+    @* The address of jqueryval can be found in BundleConfig.cs *@
+    @Scripts.Render("~/bundles/jqueryval");
+
     <script>
         $(document).ready(function () {
             //vm stands for view model on client side
@@ -90,29 +94,56 @@
                     //e for the event, customer = selected customer
 
                     //for better coding, use data binding like angular, react, vue that don't write any html markup
-                    $('#movies').append("<li class='list-group-item'>" + movie.name + "</li>");
+                    if ($.inArray(movie.id, vm.MovieIds) > -1) {
+                        toastr.info("The movie is already selected.");
+                        $('#movie').typeahead("val", "");
+                    }
+                    else
+                    {
+                        $('#movies').append("<li class='list-group-item'>" + movie.name + "</li>");
 
-                    $('#movie').typeahead("val", "");
+                        $('#movie').typeahead("val", "");
 
-                    vm.MovieIds.push(movie.id);
+                        vm.MovieIds.push(movie.id);
+                    }
                 });
 
-            $('#newRental').submit(function (e) {
-                //Prevent the form submitting normally
-                e.preventDefault();
+            //custom validators
+            //lst Parameter: name of validator; 2nd Parameter: validated function implementation, 3rd Parameter: Error Message
+            $.validator.addMethod("validCustomer", function () {
+                return vm.CustomerID && vm.CustomerID !== 0;
+            }, "Please select a valid Customer.");
 
-                $.ajax({
-                    url: "../api/NewRentals",
-                    method: "post",
-                    data: vm
-                })
-                .done(function () {
-                    toastr.success("Rentals successfully recorded.");
-                })
-                .fail(function () {
-                    toastr.fail("Something unexpected happened.");
-                });
+            $.validator.addMethod("validMovies", function () {
+                return vm.MovieIds.length >= 1;
+            }, "Please select at least one movie.");
+
+            //form validation
+            $('#newRental').validate({
+                submitHandler: function (e) {
+                    //Prevent the form submitting normally
+                    e.preventDefault();
+
+                    $.ajax({
+                        url: "../api/NewRentals",
+                        method: "post",
+                        data: vm
+                    })
+                    .done(function () {
+                        toastr.success("Rentals successfully recorded.");
+                    })
+                    .fail(function () {
+                        toastr.fail("Something unexpected happened.");
+                    });
+                }
             });
+
+            //If no validation on the form => use below code to handle form submission.
+            /*
+            $('#newRental').submit(function (e) {
+                
+            });
+            */
         });
     </script>
 }
